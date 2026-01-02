@@ -1,664 +1,611 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preface School Team Analytics 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        font-family: "Montserrat", sans-serif;
-        background-color: #f6f6f6;
-        color: #404041;
-      }
-      .bg-primary-light {
-        background-color: #85bcce;
-      }
-      .bg-pst {
-        background-color: #45769d;
-      }
-      .bg-pcw {
-        background-color: #bdcee2;
-      }
-      .text-pst {
-        color: #45769d;
-      }
-      .border-pst {
-        border-color: #45769d;
-      }
+        :root {
+            /* Brand Colors */
+            --white: #ffffff;
+            --light-blue: #85bcce;
+            --dark-grey: #404041;
+            --bg-grey: #f6f6f6;
+            --pst: #45769d;
+            --pcw: #bdcee2;
+            --sec-blue: #387dff;
+            --sec-sky: #7cb9e8;
+            --sec-gold: #e4bf63;
+            --sec-light-grey: #e6e7e8;
+        }
 
-      .card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-      }
-      .card:hover {
-        transform: translateY(-2px);
-      }
-      .chart-container {
-        position: relative;
-        height: 240px;
-        width: 100%;
-      }
-      .rank-circle {
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-weight: 700;
-        font-size: 0.7rem;
-      }
-      .rank-top {
-        background-color: #45769d;
-        color: white;
-      }
-      .rank-normal {
-        background-color: #e6e7e8;
-        color: #404041;
-      }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-grey);
+            color: var(--dark-grey);
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .chart-container {
+            position: relative;
+            height: 240px;
+            width: 100%;
+        }
 
-      .table-container::-webkit-scrollbar {
-        height: 6px;
-      }
-      .table-container::-webkit-scrollbar-thumb {
-        background: #bdcee2;
-        border-radius: 10px;
-      }
+        /* Instructor Ranking Specific Styles */
+        .tab-active {
+            background-color: var(--pst) !important;
+            color: var(--bg-grey) !important;
+            border-bottom: 4px solid var(--sec-gold);
+        }
+        .score-bar-bg {
+            background-color: var(--sec-light-grey);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100px;
+        }
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease-out;
+        }
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .rank-1 { background-color: var(--sec-gold); color: var(--dark-grey); }
+        .rank-2 { background-color: var(--sec-sky); color: var(--bg-grey); }
+        .rank-3 { background-color: var(--pcw); color: var(--dark-grey); }
+        .rank-other { background-color: var(--sec-light-grey); color: var(--dark-grey); }
 
-      th {
-        cursor: pointer;
-        user-select: none;
-        position: relative;
-      }
-      th:hover {
-        color: #45769d;
-      }
-      .sort-icon::after {
-        content: "↕";
-        margin-left: 4px;
-        opacity: 0.3;
-      }
-      th.sort-asc .sort-icon::after {
-        content: "↑";
-        opacity: 1;
-      }
-      th.sort-desc .sort-icon::after {
-        content: "↓";
-        opacity: 1;
-      }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--pcw);
+            border-radius: 10px;
+        }
+
+        .insight-pill {
+            background: var(--white);
+            border-left: 3px solid var(--pst);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
     </style>
-  </head>
-  <body class="p-4 md:p-8">
+</head>
+<body class="p-4 md:p-8">
+
     <!-- Header Section -->
-    <header
-      class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-end gap-4"
-    >
-      <div>
-        <div class="flex items-center gap-3 mb-2">
-          <div
-            class="w-10 h-10 bg-pst rounded flex items-center justify-center overflow-hidden"
-          >
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC9IEGIxEUkALe_8c_tFqY0jbzySaCGdF_wQ&s"
-              alt="Preface Logo"
-              class="w-full h-full object-cover"
-              onerror="this.src='https://placehold.co/40x40/45769d/ffffff?text=P'"
-            />
-          </div>
-          <h1 class="text-3xl font-bold text-pst">
-            School Team Analytics 2025
-          </h1>
+    <header class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-pst rounded flex items-center justify-center overflow-hidden">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC9IEGIxEUkALe_8c_tFqY0jbzySaCGdF_wQ&s" alt="Preface Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/45769d/ffffff?text=P'">
+                </div>
+                <h1 class="text-3xl font-bold" style="color: var(--pst)">School Team Analytics 2025</h1>
+            </div>
+            <p class="text-gray-500 font-medium">Annual Analysis: Sessions, Engagement & Performance</p>
         </div>
-        <p class="text-gray-500 font-medium">
-          Annual Analysis: Sessions, Engagement & Performance
-        </p>
-      </div>
-      <div class="flex gap-4">
-        <div class="text-right">
-          <p
-            class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"
-          >
-            Report Cycle
-          </p>
-          <p class="text-sm font-bold">FY2025 Annual</p>
+        <div class="flex gap-4">
+            <div class="text-right">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Report Cycle</p>
+                <p class="text-sm font-bold">FY2025 Annual</p>
+            </div>
+            <div class="px-4 py-2 rounded-lg font-semibold uppercase text-xs flex items-center tracking-wider" style="background-color: var(--pst); color: var(--bg-grey)">
+                Internal Only
+            </div>
         </div>
-        <div
-          class="bg-pst text-white px-4 py-2 rounded-lg font-semibold uppercase text-xs flex items-center tracking-wider"
-        >
-          Internal Only
-        </div>
-      </div>
     </header>
 
     <!-- Executive Summary Stats -->
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div class="card p-6 border-b-4 border-pst">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-          Total Sessions
-        </p>
-        <h2 class="text-4xl font-bold mt-2 text-pst">107</h2>
-      </div>
-      <div class="card p-6 border-b-4 border-pst">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-          Total Pax
-        </p>
-        <h2 class="text-4xl font-bold mt-2 text-pst">2,120</h2>
-      </div>
-      <div class="card p-6 border-b-4 border-pst">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-          Teaching Hours
-        </p>
-        <h2 class="text-4xl font-bold mt-2 text-pst">
-          240<span class="text-lg">h</span>
-        </h2>
-      </div>
-      <div class="card p-6 border-b-4 border-pst">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-          Weighted CSAT
-        </p>
-        <h2 class="text-4xl font-bold mt-2 text-pst">
-          4.51<span class="text-base font-normal text-gray-400">/5</span>
-        </h2>
-      </div>
+    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="card p-4 border-b-4" style="border-color: var(--pst)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Sessions</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">107</h2>
+        </div>
+        <div class="card p-4 border-b-4" style="border-color: var(--pst)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Pax</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">2,120</h2>
+        </div>
+        <div class="card p-4 border-b-4" style="border-color: var(--pcw)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Response Rate</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">46.45%</h2>
+        </div>
+        <div class="card p-4 border-b-4" style="border-color: var(--light-blue)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Content Score</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">4.337<span class="text-xs font-normal text-gray-400">/5</span></h2>
+        </div>
+        <div class="card p-4 border-b-4" style="border-color: var(--light-blue)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Instructor Score</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">4.429<span class="text-xs font-normal text-gray-400">/5</span></h2>
+        </div>
+        <div class="card p-4 border-b-4" style="border-color: var(--sec-gold)">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Satisfaction</p>
+            <h2 class="text-2xl font-bold mt-1" style="color: var(--pst)">4.426<span class="text-xs font-normal text-gray-400">/5</span></h2>
+        </div>
     </div>
 
     <!-- Main Analytics Grid -->
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
-      <!-- Audience Distribution (Pie) -->
-      <div class="card p-6 lg:col-span-4">
-        <h3
-          class="text-sm font-bold uppercase text-gray-500 mb-4 tracking-widest"
-        >
-          Audience Impact %
-        </h3>
-        <div class="chart-container">
-          <canvas id="impactChart"></canvas>
-        </div>
-      </div>
+        
 
-      <!-- Language Impact Section -->
-      <div
-        class="card p-6 lg:col-span-4 bg-pst text-white relative overflow-hidden"
-      >
-        <div class="relative z-10">
-          <h3
-            class="text-sm font-bold uppercase text-blue-100 mb-4 tracking-widest"
-          >
-            Language Distribution
-          </h3>
-          <div class="flex justify-between items-end mb-6">
-            <div>
-              <p class="text-3xl font-bold text-[#85bcce]">63.6%</p>
-              <p class="text-[10px] uppercase font-bold text-[#85bcce]">
-                Cantonese (68 Sessions)
-              </p>
+        <div class="card p-6 lg:col-span-4 relative overflow-hidden" style=" color: var(--bg-grey)">
+            <div class="relative z-10">
+                <h3 class="text-sm font-bold uppercase mb-4 tracking-widest" style="color: var(--pcw)">Language Distribution</h3>
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <p class="text-3xl font-bold" style="color: var(--light-blue)">63.6%</p>
+                        <p class="text-[10px] uppercase font-bold" style="color: var(--light-blue)">Cantonese (68 Sessions)</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-bold" style="color: var(--pcw)">36.4%</p>
+                        <p class="text-[10px] uppercase font-bold" style="color: var(--pcw)">English (39 Sessions)</p>
+                    </div>
+                </div>
+                <div class="chart-container !h-32">
+                    <canvas id="languageChart"></canvas>
+                </div>
             </div>
-            <div class="text-right">
-              <p class="text-3xl font-bold text-[#bdcee2]">36.4%</p>
-              <p class="text-[10px] uppercase font-bold text-[#bdcee2]">
-                English (39 Sessions)
-              </p>
-            </div>
-          </div>
-          <div class="chart-container !h-32">
-            <canvas id="languageChart"></canvas>
-          </div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full"></div>
         </div>
-        <div
-          class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full"
-        ></div>
-      </div>
 
-      <!-- CSAT by Segment (Bar) -->
-      <div class="card p-6 lg:col-span-4">
-        <h3
-          class="text-sm font-bold uppercase text-gray-500 mb-4 tracking-widest"
-        >
-          CSAT by Segment
-        </h3>
-        <div class="chart-container">
-          <canvas id="csatChart"></canvas>
+        <div class="card p-6 lg:col-span-4">
+            <h3 class="text-sm font-bold uppercase text-gray-500 mb-4 tracking-widest">Audience Impact %</h3>
+            <div class="chart-container">
+                <canvas id="impactChart"></canvas>
+            </div>
         </div>
-      </div>
+
+        <div class="card p-6 lg:col-span-4">
+            <h3 class="text-sm font-bold uppercase text-gray-500 mb-4 tracking-widest">CSAT by Audience</h3>
+            <div class="chart-container">
+                <canvas id="csatChart"></canvas>
+            </div>
+        </div>
     </div>
 
-    <!-- Interactive Instructor Ranking Matrix -->
-    <div class="max-w-7xl mx-auto mb-8">
-      <div class="card overflow-hidden">
-        <div
-          class="p-6 border-b border-gray-100 flex justify-between items-center bg-white"
-        >
-          <div>
-            <h3 class="text-xl font-bold">Instructor Performance Ranking</h3>
-            <p class="text-xs text-gray-400 mt-1">
-              Click headers to sort instructors (A-Z, Z-A, or Value)
-            </p>
-          </div>
+    <!-- CONTENT ANALYSIS SECTION -->
+    <div class="max-w-7xl mx-auto mb-10">
+        <div class="flex items-center gap-4 mb-6">
+            <h2 class="text-2xl font-bold" style="color: var(--pst)">Content Analysis Report</h2>
+            <div class="h-px flex-grow bg-gray-200"></div>
+            <span class="text-xs font-bold text-gray-400 bg-white px-3 border rounded-full py-1 uppercase">Metric: Subject Impact</span>
         </div>
-        <div class="table-container overflow-x-auto">
-          <table class="w-full text-left" id="instructorTable">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="p-4 text-xs font-bold text-gray-500 uppercase w-16">
-                  Rank
-                </th>
-                <th
-                  class="p-4 text-xs font-bold text-gray-500 uppercase"
-                  onclick="sortData('name')"
-                >
-                  Instructor <span class="sort-icon"></span>
-                </th>
-                <th
-                  class="p-4 text-xs font-bold text-gray-500 uppercase text-center"
-                  onclick="sortData('sessions')"
-                >
-                  Sessions <span class="sort-icon"></span>
-                </th>
-                <th
-                  class="p-4 text-xs font-bold text-gray-500 uppercase text-center"
-                  onclick="sortData('pax')"
-                >
-                  Pax Volume <span class="sort-icon"></span>
-                </th>
-                <th
-                  class="p-4 text-xs font-bold text-gray-500 uppercase"
-                  onclick="sortData('target')"
-                >
-                  Top Audience <span class="sort-icon"></span>
-                </th>
-                <th
-                  class="p-4 text-xs font-bold text-gray-500 uppercase text-right"
-                  onclick="sortData('score')"
-                >
-                  Instructor Score <span class="sort-icon"></span>
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100" id="tableBody">
-              <!-- Data injected by JS -->
-            </tbody>
-          </table>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+            <div class="lg:col-span-4">
+                <div class="card p-8 h-full flex flex-col justify-center border-l-8" style="color: var(--dark-grey); border-color: var(--pst)">
+                    <h3 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-70">Core Strategic Change</h3>
+                    <h4 class="text-3xl font-bold mb-4 leading-tight">The 70/30 Rule</h4>
+                    <p class="text-sm leading-relaxed opacity-95">
+                        Data proves that <strong>Lecture-heavy</strong> content drastically reduces satisfaction. Curriculum must prioritize <span class="font-bold underline">Immediate Utility</span> over Theory, dedicating 70% of time to active practice.
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8">
+                <div class="card overflow-hidden h-full">
+                    <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                        <h3 class="text-sm font-bold uppercase text-gray-500 tracking-widest">Audience Preferences Matrix</h3>
+                        <span class="text-[10px] text-gray-400 font-medium italic">2025 Content Feedback</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-white">
+                                <tr>
+                                    <th class="p-4 border-b font-bold text-gray-400 uppercase text-[10px]">Segment</th>
+                                    <th class="p-4 border-b font-bold text-gray-400 uppercase text-[10px]">Score Trend</th>
+                                    <th class="p-4 border-b font-bold text-gray-400 uppercase text-[10px]">Content Preferences</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr>
+                                    <td class="p-4 font-bold">Primary Students</td>
+                                    <td class="p-4"><span class="font-bold" style="color: var(--light-blue)">~4.7</span></td>
+                                    <td class="p-4 text-gray-600">Visual generation, music creation, and "fun" tangible outputs.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold">Secondary Students</td>
+                                    <td class="p-4"><span class="font-bold" style="color: var(--light-blue)">~4.4</span></td>
+                                    <td class="p-4 text-gray-600">Creative projects (Videos/Reels). Sensitive to project completion time.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold">University Students</td>
+                                    <td class="p-4"><span class="font-bold" style="color: var(--light-blue)">~4.8</span></td>
+                                    <td class="p-4 text-gray-600">Industry insights, future trends, and employability links.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold">Teachers</td>
+                                    <td class="p-4"><span class="font-bold" style="color: var(--light-blue)">Volatile 2.8-4.6</span></td>
+                                    <td class="p-4 text-gray-600 italic">Workload reduction: marking and lesson planning efficiency.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold">Staff</td>
+                                    <td class="p-4"><span class="font-bold" style="color: var(--light-blue)">~4.6</span></td>
+                                    <td class="p-4 text-gray-600">Practical tools for marketing, admin, and productivity (POE).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="insight-pill">
+                <p class="font-bold mb-1 uppercase text-[10px]" style="color: var(--pst)">Insight A: Visual Impact</p>
+                <p class="text-xs text-gray-600">Media creation (Music, Video, Images) drives higher perception of value than coding for students.</p>
+            </div>
+            <div class="insight-pill">
+                <p class="font-bold mb-1 uppercase text-[10px]" style="color: var(--pst)">Insight B: Professional ROI</p>
+                <p class="text-xs text-gray-600">Solving pain points like automated marking boosts teacher content scores above 4.5.</p>
+            </div>
+            <div class="insight-pill">
+                <p class="font-bold mb-1 uppercase text-[10px]" style="color: var(--pst)">Insight C: Future-Proofing</p>
+                <p class="text-xs text-gray-600">University students prioritize industry insights and employability links over basic tools.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- INSTRUCTOR ANALYSIS REPORT -->
+    <div class="max-w-7xl mx-auto mb-10">
+        <div class="flex items-center gap-4 mb-6">
+            <h2 class="text-2xl font-bold" style="color: var(--pst)">Instructor Analysis Report</h2>
+            <div class="h-px flex-grow bg-gray-200"></div>
+            <span class="text-xs font-bold text-gray-400 bg-white px-3 border rounded-full py-1 uppercase">Metric: CSAT & Engagement</span>
+        </div>
+
+        <!-- Instructor Navigation Tabs -->
+        <div class="flex overflow-x-auto custom-scrollbar mb-6 gap-2 pb-2">
+            <button onclick="switchTab('overall')" id="btn-overall" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50 tab-active">
+                Overall
+            </button>
+            <button onclick="switchTab('teacher')" id="btn-teacher" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                Teacher
+            </button>
+            <button onclick="switchTab('secondary')" id="btn-secondary" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                Secondary Student
+            </button>
+            <button onclick="switchTab('university')" id="btn-university" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                University Student
+            </button>
+            <button onclick="switchTab('staff')" id="btn-staff" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                Staff
+            </button>
+            <button onclick="switchTab('primary')" id="btn-primary" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                Primary Student
+            </button>
+            <button onclick="switchTab('parent')" id="btn-parent" class="tab-btn px-6 py-3 whitespace-nowrap font-bold rounded-lg bg-white shadow-sm transition-all hover:bg-gray-50">
+                Parent + Secondary
+            </button>
+        </div>
+
+        <!-- Content Area for Instructor Tabs -->
+        <div id="content-display" class="animate-fadeIn">
+            <!-- Content will be injected here by JavaScript -->
+        </div>
     </div>
 
     <!-- Qualitative Insights & Strategic Path -->
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-      <div class="card p-6">
-        <h3 class="text-xl font-bold mb-4 border-l-4 border-pst pl-3">
-          Qualitative Highlights
-        </h3>
-        <div class="space-y-4">
-          <div class="p-4 bg-gray-50 rounded-lg">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-pst text-lg">💻</span>
-              <p class="text-xs font-bold text-pst uppercase tracking-tighter">
-                Hands-On Demand
-              </p>
+        <div class="card p-6">
+            <h3 class="text-xl font-bold mb-4 border-l-4 pl-3 uppercase text-sm tracking-widest" style="border-color: var(--pst)">Key Feedback</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg" style="color: var(--pst)">💻</span>
+                        <p class="text-xs font-bold uppercase tracking-tighter" style="color: var(--pst)">Hands-On Demand</p>
+                    </div>
+                    <p class="text-sm italic text-gray-600">"Maybe we could do more on the computer as at the starting lessons we just listened."</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg" style="color: var(--pst)">👩‍🏫</span>
+                        <p class="text-xs font-bold uppercase tracking-tighter" style="color: var(--pst)">Workflow Utility</p>
+                    </div>
+                    <p class="text-sm italic text-gray-600">"Scanning student papers and getting tips to mark work was the most useful part."</p>
+                </div>
             </div>
-            <p class="text-sm italic text-gray-600">
-              "Maybe we could do more on the computer as at the starting lessons
-              we just listened." --Delia Memorial School (Broadway) - AI
-              Literacy
-            </p>
-          </div>
-          <div class="p-4 bg-gray-50 rounded-lg">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-pst text-lg">👩‍🏫</span>
-              <p class="text-xs font-bold text-pst uppercase tracking-tighter">
-                Workflow Utility
-              </p>
-            </div>
-            <p class="text-sm italic text-gray-600">
-              "Scanning student papers and getting tips to mark work was the
-              most useful part for staff." --HKUGA x St. Stephen's College -
-              Teacher Training
-            </p>
-          </div>
         </div>
-      </div>
 
-      <div class="card p-6">
-        <h3 class="text-xl font-bold mb-4 border-l-4 border-pst pl-3">
-          2026 Strategy
-        </h3>
-        <div class="space-y-4">
-          <div class="flex gap-4">
-            <div
-              class="flex-shrink-0 w-8 h-8 bg-pst text-white rounded flex items-center justify-center font-bold"
-            >
-              1
+        <div class="card p-6 border-t-8" style="border-color: var(--pst)">
+            <h3 class="text-xl font-bold mb-4 pl-3 uppercase text-sm tracking-widest" style="color: var(--dark-grey)">2026 Strategy</h3>
+            <div class="space-y-4">
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center font-bold" style="background-color: var(--pst); color: var(--bg-grey)">1</div>
+                    <p class="text-sm leading-snug"><span class="font-bold" style="color: var(--pst)">Adopt 70/30 Rule:</span> Mandatory transition to 70% active practice in all lesson plans.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center font-bold" style="background-color: var(--pst); color: var(--bg-grey)">2</div>
+                    <p class="text-sm leading-snug"><span class="font-bold" style="color: var(--pst)">Adjust Density:</span> Reduce curriculum volume for students to ensure "Making Time" is never cut.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center font-bold" style="background-color: var(--pst); color: var(--bg-grey)">3</div>
+                    <p class="text-sm leading-snug"><span class="font-bold" style="color: var(--pst)">Teacher Pivot:</span> Abandon theoretical AI lectures; focus solely on workload-reduction tools.</p>
+                </div>
             </div>
-            <p class="text-sm leading-snug">
-              <span class="font-bold text-pst">70/30 Rule:</span> Transition to
-              70% active practice to address "listening only" fatigue.
-            </p>
-          </div>
-          <div class="flex gap-4">
-            <div
-              class="flex-shrink-0 w-8 h-8 bg-pst text-white rounded flex items-center justify-center font-bold"
-            >
-              2
-            </div>
-            <p class="text-sm leading-snug">
-              <span class="font-bold text-pst">Growth Focus:</span> Prioritize
-              University (4.82) and Primary (4.90) for high-impact scaling.
-            </p>
-          </div>
-          <div class="flex gap-4">
-            <div
-              class="flex-shrink-0 w-8 h-8 bg-pst text-white rounded flex items-center justify-center font-bold"
-            >
-              3
-            </div>
-            <p class="text-sm leading-snug">
-              <span class="font-bold text-pst">Governance:</span> Solve the
-              feedback gap for SEN sessions and NIL instructors.
-            </p>
-          </div>
         </div>
-      </div>
     </div>
 
     <script>
-      const palette = [
-        "#45769d",
-        "#85bcce",
-        "#bdcee2",
-        "#387dff",
-        "#7cb9e8",
-        "#e4bf63",
-        "#e6e7e8",
-        "#404041",
-      ];
+        const instructorData = {
+            overall: {
+                title: "Overall Instructor Performance Summary",
+                description: "Aggregated performance metrics across all training sessions and audience segments.",
+                columns: ["Instructor", "Sessions", "Pax", "Score", "Top Target Audience"],
+                rows: [
+                    ["Joey", 17, 643, 4.476, "Teacher"],
+                    ["Scott", 26, 230, 4.395, "Secondary Student"],
+                    ["Jason", 6, 43, 4.750, "Primary Student"],
+                    ["Harsh", 17, 579, 4.528, "Secondary Student"],
+                    ["Rocky + JJ", 1, 50, 4.316, "Secondary Student"],
+                    ["Stacey", 16, 85, 4.074, "Secondary Student"],
+                    ["Alfred", 4, 217, 4.187, "Teacher"],
+                    ["Cman", 17, 30, 4.833, "Secondary Student"],
+                    ["Timmy", 6, 25, 4.250, "Secondary Student"],
+                    ["Sean", 3, 186, 4.544, "Teacher"],
+                    ["Rene", 1, 30, 4.455, "Teacher"],
+                    ["Tommie + Sean", 1, 91, 4.375, "Teacher"],
+                    ["Dominic", 1, 22, 4.143, "Secondary Student"]
+                ]
+            },
+            teacher: {
+                title: "Teacher Audience Rankings",
+                context: "Performance is correlated with immediate practical utility and workload reduction.",
+                rows: [
+                    { rank: 1, name: "Joey", score: 4.58, pax: 35, feedback: "<strong>High Potential:</strong> Scored 4.75 at Emmanuel Primary with praise for clear expression, and 4.57 at HSU. However, scored lower (4.17) at the MKMCF training." },
+                    { rank: 2, name: "Sean", score: 4.52, pax: 65, feedback: "<strong>Subject Expert:</strong> Participants at TSK noted sharing transformed 'knowledge to wisdom'." },
+                    { rank: 3, name: "Rene", score: 4.46, pax: 30, feedback: "<strong>Consistent:</strong> Delivered the ARCH Education training with solid engagement." },
+                    { rank: 4, name: "Harsh", score: 4.45, pax: 300, feedback: "<strong>High Volume Specialist:</strong> Teachers valued specific utility like automated marking tips." },
+                    { rank: 5, name: "Tommie + Sean", score: 4.38, pax: 91, feedback: "<strong>Co-Taught:</strong> Good at DGS; feedback suggests more hands-on sessions needed." },
+                    { rank: 6, name: "Stacey", score: 4.07, pax: 55, feedback: "<strong>Pacing Issues:</strong> Feedback from TWGHS indicated a need to slow down instructions." },
+                    { rank: 7, name: "Alfred", score: 3.42, pax: 100, feedback: "<strong>Critical Development:</strong> Feedback cited lack of practical advice and engagement." }
+                ]
+            },
+            secondary: {
+                title: "Secondary Student Rankings",
+                context: "Success driven by interactivity and ability to finish creative projects within time limits.",
+                rows: [
+                    { rank: 1, name: "Cman", score: 4.83, pax: 15, feedback: "<strong>Top Performer:</strong> Highest segment score achieved at Delia (Hip Wo)." },
+                    { rank: 2, name: "Joey", score: 4.64, pax: 197, feedback: "<strong>High Volume Star:</strong> Excellent engagement (4.72) at HKU Business Academy." },
+                    { rank: 3, name: "Stacey + Cman", score: 4.67, pax: 15, feedback: "<strong>Strong Duo:</strong> High satisfaction at Delia for video/AI generation workshop." },
+                    { rank: 4, name: "Harsh", score: 4.56, pax: 178, feedback: "<strong>Consistent:</strong> Described as 'passionate' with 'eye-opening' content." },
+                    { rank: 5, name: "Jason", score: 4.50, pax: 35, feedback: "<strong>Engaging:</strong> Positive reception at Glo Travel pre-tour workshop." },
+                    { rank: 6, name: "Alfred", score: 4.40, pax: 100, feedback: "<strong>Segment Gap:</strong> Performed significantly better with students (SPCC) than teachers." },
+                    { rank: 7, name: "Scott", score: 4.38, pax: 241, feedback: "<strong>Reliable:</strong> Consistent across multi-day HKBU Clap-Tech camps." },
+                    { rank: 8, name: "Rocky + JJ", score: 4.32, pax: 50, feedback: "<strong>Project Based:</strong> Time management issues prevented completion of work." },
+                    { rank: 9, name: "Timmy", score: 4.25, pax: 25, feedback: "<strong>Data Science:</strong> Lower than segment average for Python instruction." }
+                ]
+            },
+            university: {
+                title: "University Student Rankings",
+                context: "Participants demand industry relevance and clear, logical delivery.",
+                rows: [
+                    { rank: 1, name: "Scott", score: 5.00, pax: 15, feedback: "<strong>Perfect Score:</strong> Students impressed by environment and way of working." },
+                    { rank: 2, name: "Harsh", score: 4.58, pax: 71, feedback: "<strong>Large Seminar:</strong> HKUST MBA Careers. Found him 'smart' but requested more breaks." }
+                ]
+            },
+            staff: {
+                title: "Corporate & Staff Rankings",
+                context: "High scores driven by immediate workflow application (POE, automation).",
+                rows: [
+                    { rank: 1, name: "Harsh", score: 5.00, pax: 30, feedback: "<strong>Perfect Score:</strong> ISF Staff Training received 5/5 across all metrics." },
+                    { rank: 2, name: "Joey", score: 4.68, pax: 175, feedback: "<strong>Dominant:</strong> Valued for hands-on POE trials and rich content diversity." },
+                    { rank: 3, name: "Sean", score: 4.57, pax: 30, feedback: "<strong>Strong:</strong> ARCH Education training. Interactive, though more examples requested." }
+                ]
+            },
+            primary: {
+                title: "Primary Student Rankings",
+                context: "Small sample size. Engagement depends heavily on pacing and fun visuals.",
+                rows: [
+                    { rank: 1, name: "Jason", score: 5.00, pax: 8, feedback: "<strong>Perfect Score:</strong> Small group session (AKA Coding) was highly successful." },
+                    { rank: 2, name: "Scott", score: 4.00, pax: 47, feedback: "<strong>Pacing:</strong> High content score, but spoken delivery was described as too fast." }
+                ]
+            },
+            parent: {
+                title: "Parent + Student Rankings",
+                context: "Mixed-age groups requiring balance between adult and teenage engagement.",
+                rows: [
+                    { rank: 1, name: "Joey", score: 4.32, pax: 130, feedback: "<strong>Sole Instructor:</strong> Effectively engages parents (4.71) more than students (3.40-4.00)." }
+                ]
+            }
+        };
 
-      // Initial Data from Sheet1 (1).csv
-      let instructors = [
-        {
-          name: "Cman",
-          sessions: 17,
-          pax: 30,
-          score: 4.83,
-          target: "Secondary Student",
-        },
-        {
-          name: "Jason",
-          sessions: 6,
-          pax: 43,
-          score: 4.75,
-          target: "Primary Student",
-        },
-        { name: "Sean", sessions: 3, pax: 186, score: 4.54, target: "Teacher" },
-        {
-          name: "Harsh",
-          sessions: 17,
-          pax: 579,
-          score: 4.53,
-          target: "Secondary Student",
-        },
-        {
-          name: "Joey",
-          sessions: 18,
-          pax: 665,
-          score: 4.47,
-          target: "Teacher",
-        },
-        { name: "Rene", sessions: 1, pax: 30, score: 4.45, target: "Teacher" },
-        {
-          name: "Scott",
-          sessions: 26,
-          pax: 230,
-          score: 4.4,
-          target: "Secondary Student",
-        },
-        {
-          name: "Tommie",
-          sessions: 1,
-          pax: 91,
-          score: 4.38,
-          target: "Secondary Student",
-        },
-        {
-          name: "Rocky, JJ",
-          sessions: 1,
-          pax: 50,
-          score: 4.32,
-          target: "Secondary Student",
-        },
-        {
-          name: "Timmy",
-          sessions: 6,
-          pax: 25,
-          score: 4.25,
-          target: "Secondary Student",
-        },
-        {
-          name: "Alfred",
-          sessions: 4,
-          pax: 217,
-          score: 4.19,
-          target: "Teacher",
-        },
-        {
-          name: "Stacey",
-          sessions: 16,
-          pax: 85,
-          score: 4.07,
-          target: "Secondary Student",
-        },
-      ];
-
-      let currentSort = { prop: "score", dir: "desc" };
-
-      function renderTable() {
-        const tbody = document.getElementById("tableBody");
-        tbody.innerHTML = "";
-
-        // Sort by score first to determine ranks
-        const rankedList = [...instructors].sort((a, b) => b.score - a.score);
-
-        instructors.forEach((item, index) => {
-          const rank = rankedList.findIndex((r) => r.name === item.name) + 1;
-          const isNil = item.score === 0;
-
-          const row = document.createElement("tr");
-          if (isNil) row.className = "bg-gray-50/50";
-
-          row.innerHTML = `
-                    <td class="p-4">
-                        <div class="rank-circle ${
-                          rank <= 3 && !isNil ? "rank-top" : "rank-normal"
-                        }">
-                            ${isNil ? "-" : rank}
-                        </div>
-                    </td>
-                    <td class="p-4 font-semibold ${
-                      isNil ? "text-gray-400" : ""
-                    }">${item.name}</td>
-                    <td class="p-4 text-center ${
-                      isNil ? "text-gray-400" : "text-gray-500"
-                    }">${item.sessions}</td>
-                    <td class="p-4 text-center ${
-                      isNil ? "text-gray-400 font-normal" : "font-medium"
-                    }">${item.pax}</td>
-                    <td class="p-4 text-xs ${
-                      isNil ? "text-gray-300 italic" : "text-gray-600"
-                    }">${item.target}</td>
-                    <td class="p-4 font-bold text-right ${
-                      isNil ? "text-gray-300 italic" : "text-pst"
-                    }">
-                        ${isNil ? "NIL" : item.score.toFixed(2)}
-                    </td>
-                `;
-          tbody.appendChild(row);
-        });
-      }
-
-      window.sortData = function (prop) {
-        const headers = document.querySelectorAll("th");
-        headers.forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
-
-        if (currentSort.prop === prop) {
-          currentSort.dir = currentSort.dir === "asc" ? "desc" : "asc";
-        } else {
-          currentSort.prop = prop;
-          currentSort.dir = "desc";
+        function getScoreColor(score) {
+            if (score >= 4.7) return 'var(--sec-gold)';
+            if (score >= 4.4) return 'var(--pst)';
+            return 'var(--sec-sky)';
         }
 
-        const activeHeader = Array.from(headers).find((h) =>
-          h.getAttribute("onclick")?.includes(`'${prop}'`)
-        );
-        activeHeader?.classList.add(
-          currentSort.dir === "asc" ? "sort-asc" : "sort-desc"
-        );
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+            document.getElementById('btn-' + tabId).classList.add('tab-active');
 
-        instructors.sort((a, b) => {
-          let valA = a[prop];
-          let valB = b[prop];
+            const container = document.getElementById('content-display');
+            const tabData = instructorData[tabId];
 
-          if (typeof valA === "string") {
-            return currentSort.dir === "asc"
-              ? valA.localeCompare(valB)
-              : valB.localeCompare(valA);
-          } else {
-            return currentSort.dir === "asc" ? valA - valB : valB - valA;
-          }
-        });
+            if (tabId === 'overall') {
+                renderOverall(container, tabData);
+            } else {
+                renderAudience(container, tabData);
+            }
+        }
 
-        renderTable();
-      };
+        function renderOverall(container, tabData) {
+            let html = `
+                <div class="card p-6 overflow-hidden">
+                    <h2 class="text-xl font-bold mb-2">${tabData.title}</h2>
+                    <p class="text-gray-500 text-sm mb-6">${tabData.description}</p>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b" style="border-color: var(--sec-light-grey)">
+                                    ${tabData.columns.map(col => `<th class="py-3 px-4 text-xs uppercase tracking-wider font-bold text-gray-400">${col}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y" style="border-color: var(--sec-light-grey)">
+                                ${tabData.rows.sort((a,b) => b[3] - a[3]).map(row => `
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-4 font-bold">${row[0]}</td>
+                                        <td class="py-4 px-4 text-sm">${row[1]}</td>
+                                        <td class="py-4 px-4 text-sm">${row[2]}</td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-3">
+                                                <span class="font-bold w-10">${row[3].toFixed(3)}</span>
+                                                <div class="score-bar-bg hidden sm:block">
+                                                    <div class="score-bar-fill" style="width: ${(row[3]/5)*100}%; background-color: ${getScoreColor(row[3])}"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <span class="text-xs px-2 py-1 rounded font-semibold" style="background-color: var(--pcw); color: var(--pst)">
+                                                ${row[4]}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
 
-      // Initial render
-      window.onload = function () {
-        renderTable();
+        function renderAudience(container, tabData) {
+            let html = `
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold">${tabData.title}</h2>
+                    <p class="text-sm text-gray-600 mt-1 max-w-3xl">${tabData.context}</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    ${tabData.rows.map(item => {
+                        const rankClass = item.rank === 1 ? 'rank-1' : item.rank === 2 ? 'rank-2' : item.rank === 3 ? 'rank-3' : 'rank-other';
+                        return `
+                        <div class="card p-5 flex flex-col md:flex-row gap-4 border-l-4" style="border-color: ${getScoreColor(item.score)}">
+                            <div class="flex-shrink-0 flex md:flex-col items-center justify-center gap-2">
+                                <span class="rank-badge ${rankClass}">${item.rank}</span>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold" style="color: var(--dark-grey)">${item.score.toFixed(2)}</div>
+                                    <div class="text-[10px] uppercase font-bold text-gray-400">Score</div>
+                                </div>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-lg font-bold" style="color: var(--pst)">${item.name}</h3>
+                                    <span class="text-xs font-semibold px-2 py-1 rounded bg-gray-100 text-gray-500">${item.pax} Pax</span>
+                                </div>
+                                <div class="score-bar-bg w-full mb-3" style="height: 4px;">
+                                    <div class="score-bar-fill" style="width: ${(item.score/5)*100}%; background-color: ${getScoreColor(item.score)}"></div>
+                                </div>
+                                <p class="text-sm text-gray-700 leading-relaxed italic">
+                                    ${item.feedback}
+                                </p>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            container.innerHTML = html;
+        }
 
-        // Charts
-        const ctxImpact = document
-          .getElementById("impactChart")
-          .getContext("2d");
-        new Chart(ctxImpact, {
-          type: "doughnut",
-          data: {
-            labels: [
-              "Sec. Student",
-              "Teacher",
-              "Staff",
-              "Parent+Sec",
-              "Univ.",
-              "Primary",
-              "SEN",
-              "Parent",
-            ],
-            datasets: [
-              {
-                data: [38.02, 34.39, 11.89, 6.13, 4.06, 3.21, 2.31, 1.42],
-                backgroundColor: palette,
-                borderWidth: 2,
-                borderColor: "#ffffff",
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  font: { family: "Montserrat", size: 9 },
-                  padding: 12,
-                  boxWidth: 10,
+        window.onload = function() {
+            // Initialize Instructor Tabs
+            switchTab('overall');
+
+            // Initialize Charts
+            const palette = ['#45769d', '#85bcce', '#bdcee2', '#387dff', '#7cb9e8', '#e4bf63', '#e6e7e8', '#404041'];
+
+            const ctxImpact = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctxImpact, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sec. Student', 'Teacher', 'Staff', 'Parent+Sec', 'Univ.', 'Primary', 'SEN', 'Parent'],
+                    datasets: [{
+                        data: [38.02, 34.39, 11.89, 6.13, 4.06, 3.21, 2.31, 1.42],
+                        backgroundColor: palette,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
                 },
-              },
-            },
-            cutout: "70%",
-          },
-        });
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Montserrat', size: 9 }, padding: 12, boxWidth: 10 } }
+                    },
+                    cutout: '70%'
+                }
+            });
 
-        const ctxLang = document
-          .getElementById("languageChart")
-          .getContext("2d");
-        new Chart(ctxLang, {
-          type: "bar",
-          data: {
-            labels: ["Language Split"],
-            datasets: [
-              {
-                label: "Cantonese",
-                data: [63.55],
-                backgroundColor: "#85bcce",
-                borderRadius: 4,
-              },
-              {
-                label: "English",
-                data: [36.45],
-                backgroundColor: "#bdcee2",
-                borderRadius: 4,
-              },
-            ],
-          },
-          options: {
-            indexAxis: "y",
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: { stacked: true, display: false, max: 100 },
-              y: { stacked: true, display: false },
-            },
-            plugins: { legend: { display: false } },
-          },
-        });
+            const ctxLang = document.getElementById('languageChart').getContext('2d');
+            new Chart(ctxLang, {
+                type: 'bar',
+                data: {
+                    labels: ['Language Split'],
+                    datasets: [
+                        { label: 'Cantonese', data: [63.55], backgroundColor: '#85bcce', borderRadius: 4 },
+                        { label: 'English', data: [36.45], backgroundColor: '#bdcee2', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, display: false, max: 100 },
+                        y: { stacked: true, display: false }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
 
-        const ctxCsat = document.getElementById("csatChart").getContext("2d");
-        new Chart(ctxCsat, {
-          type: "bar",
-          data: {
-            labels: [
-              "Primary",
-              "Univ.",
-              "Staff",
-              "Parent",
-              "Sec.",
-              "P-C Par.",
-              "P-C Stu.",
-              "Teacher",
-            ],
-            datasets: [
-              {
-                label: "Avg. CSAT",
-                data: [4.9, 4.82, 4.57, 4.53, 4.39, 4.39, 4.28, 4.23],
-                backgroundColor: "#85bcce",
-                borderRadius: 4,
-                barThickness: 18,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                min: 4.0,
-                max: 5.0,
-                ticks: { font: { size: 10 }, stepSize: 0.2 },
-              },
-              x: {
-                grid: { display: false },
-                ticks: { font: { family: "Montserrat", size: 8 } },
-              },
-            },
-            plugins: { legend: { display: false } },
-          },
-        });
-      };
+            const ctxCsat = document.getElementById('csatChart').getContext('2d');
+            new Chart(ctxCsat, {
+                type: 'bar',
+                data: {
+                    labels: ['Primary', 'Univ.', 'Staff', 'Parent', 'Sec.', 'PCW Par.', 'PCW Stu.', 'Teacher'],
+                    datasets: [{
+                        label: 'Avg. CSAT',
+                        data: [4.90, 4.82, 4.57, 4.53, 4.39, 4.39, 4.28, 4.23],
+                        backgroundColor: '#85bcce',
+                        borderRadius: 4,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 4.0, max: 5.0, ticks: { font: { size: 10 }, stepSize: 0.2 } },
+                        x: { grid: { display: false }, ticks: { font: { family: 'Montserrat', size: 8 } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        };
     </script>
-  </body>
+</body>
 </html>
